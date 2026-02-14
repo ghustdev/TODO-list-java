@@ -23,4 +23,16 @@ public class TaskService {
 	public List<Task> listTasks () {
 		return repository.getTasks();
 	}
+	
+	public boolean deleteTask(int id) {
+		List<Task> listTasks = repository.getTasks();
+		
+		boolean removedId = listTasks.removeIf(t -> t.getId() == id);
+		
+		if (removedId) {
+			repository.saveTask(listTasks);
+			return true;
+		}
+		return false;
+	}
 }

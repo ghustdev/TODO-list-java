@@ -22,7 +22,7 @@ public class Interface {
 				System.out.println("[1] - Adicionar Tarefa");
 				System.out.println("[2] - Listar Tarefa");
 				System.out.println("[3] - Editar Tarefa");
-				System.out.println("[4] - Excluir Tarefa");
+				System.out.println("[4] - Deletar Tarefa");
 				System.out.println("[5] - Quantidade por status");
 				System.out.println("[6] - Filtro por data");
 				System.out.println("[0] - Encerrar programa");
@@ -47,11 +47,7 @@ public class Interface {
 					scanner.nextLine();
 				}
 				else if (optionMenu == 4) {
-					System.out.println("+================================================+");
-					System.out.println("Excluir ainda não funciona...");
-					System.out.println("+================================================+");
-					System.out.println("Aperte \"Enter\" para continuar");
-					scanner.nextLine();
+					cliDeleteTask();
 				}
 				else if (optionMenu == 5) {
 					System.out.println("+================================================+");
@@ -169,6 +165,40 @@ public class Interface {
 		catch (Exception e) {
 			System.out.println("+================================================+");
 			System.out.println("Erro: Algum erro em listar tarefas (Listar Tarefas)");
+			System.out.println("+================================================+");
+			System.out.println("Aperte \"Enter\" para continuar");
+		}
+	}
+	
+	public void cliDeleteTask() {
+		try {
+			TaskService taskService = new TaskService();
+			
+			System.out.println("+================================================+");
+			System.out.println("|                Deletar Tarefa                  |");
+			System.out.println("+================================================+");
+			System.out.print("Insira o ID para deletar: ");
+			int id = scanner.nextInt();
+			scanner.nextLine();
+			
+			boolean removedId = taskService.deleteTask(id);
+			
+			if (removedId) {
+				System.out.println("+================================================+");
+				System.out.println("Terafa excluída com sucesso!");
+			}
+			else {
+				System.out.println("+================================================+");
+				System.out.println("Erro: ID inexistente!");
+			}
+			
+			System.out.println("+================================================+");
+			System.out.println("Aperte \"Enter\" para continuar");
+			scanner.nextLine();
+		}
+		catch (Exception e) {
+			System.out.println("+================================================+");
+			System.out.println("Erro: Algum erro em deletar tarefa (Deletar Tarefa)");
 			System.out.println("+================================================+");
 			System.out.println("Aperte \"Enter\" para continuar");
 		}
