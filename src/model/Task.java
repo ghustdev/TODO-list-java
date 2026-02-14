@@ -9,21 +9,24 @@ public class Task {
 	private String description;
 	private LocalDate dateFinished;
 	private int priorityLevel;
-	private Status status;
+	private TaskStatus status;
 	private String category;
 	
 	public Task() {}
 	
-	public Task(String name, String description, LocalDate dateFinished,  Integer priorityLevel, Status status, String category) {
+	public Task(int id, String name, String description, LocalDate dateFinished,  Integer priorityLevel, String category, TaskStatus status) {
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.dateFinished = dateFinished;
 		this.priorityLevel = priorityLevel;
-		this.status = status;
 		this.category = category;
+		this.status = status;
 	}
 	
-	public enum Status {TODO, DOING, DONE}
+	public int getId() {
+		return id;
+	}
 	
 	public String getName() {
 		return name;
@@ -32,7 +35,6 @@ public class Task {
 	public String getDescription() {
 		return description;
 	}
-
 	
 	public LocalDate getDateFinished() {
 		return dateFinished;
@@ -46,8 +48,7 @@ public class Task {
 		return category;
 	}
 	
-	public int Comparable(Task other) {
-		// Ordenar baseado no nível de prioridade
-		return Integer.compare(other.priorityLevel, this.priorityLevel);
+	public TaskStatus getStatus() {
+		return status;
 	}
 }

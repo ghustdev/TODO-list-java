@@ -1,6 +1,6 @@
 package model;
 
-public enum StatusTarefa {
+public enum TaskStatus {
 	TODO,
 	DOING,
 	DONE

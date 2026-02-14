@@ -1,6 +1,7 @@
 package repository;
 
 import model.Task;
+import model.TaskStatus;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -18,15 +19,22 @@ public class TaskRepository {
 		try (BufferedWriter bw = new BufferedWriter(new FileWriter(path))) {
 			for (Task task : tasks) {
 				bw.write(
+						task.getId() + ";" +
 						task.getName() + ";" +
 						task.getDescription() + ";" +
-						task.getDateFinished() + ";" +
-						task.getDateFinished().format(dtf));
+						task.getDateFinished().format(dtf) + ";" +
+						task.getPriorityLevel() + ";" +
+						task.getCategory() + ";" +
+						task.getStatus()
+				);
 				bw.newLine();
 			}
 		}
 		catch (IOException e) {
-			System.out.println("Erro ao salvar dados no arquivo. Erro: " + e.getMessage());
+			System.out.println("+================================================+");
+			System.out.println("Erro ao salvar dados no arquivo - " + e.getMessage());
+			System.out.println("+================================================+");
+			System.out.println("Aperte \"Enter\" para continuar");
 		}
 	}
 	
@@ -44,23 +52,30 @@ public class TaskRepository {
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] data = line.split(";");
-				
-				String name = data[0];
-				String description =  data[1];
-				LocalDate dateFinished  = LocalDate.parse(data[2], dtf);
-				int priorityLevel =  Integer.parseInt(data[3]);
-				Task.Status status =  Task.Status.valueOf(data[4]);
+
+				int  id = Integer.parseInt(data[0]);
+				String name = data[1];
+				String description =  data[2];
+				LocalDate dateFinished  = LocalDate.parse(data[3], dtf);
+				int priorityLevel =  Integer.parseInt(data[4]);
 				String category =  data[5];
+				TaskStatus status =  TaskStatus.valueOf(data[6]);
 				
-				Task task = new Task(name, description, dateFinished, priorityLevel, status, category);
+				Task task = new Task(id, name, description, dateFinished, priorityLevel, category, status);
 				tasks.add(task);
 			}
 		}
 		catch (IOException e) {
-			System.out.println("Erro ao listar dados no arquivo. Erro: " + e.getMessage());
+			System.out.println("+================================================+");
+			System.out.println("Erro ao ler dados no arquivo - " + e.getMessage());
+			System.out.println("+================================================+");
+			System.out.println("Aperte \"Enter\" para continuar");
 		}
 		catch (NumberFormatException e) {
-			System.out.println("Erro ao processar dados no arquivo. Erro: " + e.getMessage());
+			System.out.println("+================================================+");
+			System.out.println("Erro ao processar dados no arquivo - " + e.getMessage());
+			System.out.println("+================================================+");
+			System.out.println("Aperte \"Enter\" para continuar");
 		}
 		
 		return tasks;
