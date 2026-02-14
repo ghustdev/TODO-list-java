@@ -1,6 +1,31 @@
 # TODO List Java
 
-Projeto de gerenciamento de tarefas via linha de comando (CLI), desenvolvido em Java com persistencia em arquivo CSV. O objetivo e oferecer um fluxo simples para cadastrar, listar, editar e remover tarefas.
+Projeto de gerenciamento de tarefas via linha de comando (CLI), desenvolvido em Java puro com persistencia em arquivo CSV, utilizando a arquitetura MVC (Model-View-Controller) simplificada com uma camada extra de repository. O objetivo e oferecer um fluxo simples para cadastrar, listar, editar e remover tarefas.
+
+### Breve explicação sobre MVC e as camada do projeto
+#### Model (O Dado)
+É a classe Tarefa. Ela não tem lógica de salvamento ou menus. Sua única função é definir o que é uma tarefa (ID, Nome, Status, etc.).
+
+#### View / CLI (A Interface)
+É a classe TaskManager (Main) e as CLIs. Ela cuida exclusivamente da interação com o usuário.
+
+Responsabilidade: Mostrar o menu, ler o que o usuário digita (Scanner) e exibir os resultados na tela (System.out.println).
+
+Regra: Ela não sabe que existe um arquivo CSV; ela apenas pede coisas para o Service.
+
+#### Controller/Service (A Lógica de Negócio)
+É o "cérebro" da aplicação (TaskService).
+
+Responsabilidade: Aqui é onde as decisões são tomadas. Por exemplo: "Qual será o próximo ID?" e funções intermediárias para maior controle entre CLI e a persistência.
+
+Ponto Chave: Se você precisasse de uma regra que diz que "não pode ter duas tarefas com o mesmo nome", essa regra ficaria aqui.
+
+#### repository (A Persistência)
+É a camada que lida com o mundo externo (TaskRepository).
+
+Responsabilidade: Ler e escrever no arquivo tasks.csv (escolhi CSV, pois a implementação é nativa do Java puro).
+
+Isolamento: Se no futuro você quiser mudar de CSV para um Banco de Dados SQL ou para um arquivo JSON, você só mexe aqui. O restante do sistema nem perceberia a mudança.
 
 ## Funcionalidades
 - Cadastro de tarefas com nome, descricao, data final, prioridade, categoria e status.
