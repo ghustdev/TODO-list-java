@@ -1,13 +1,15 @@
-package utils;
+package view;
 
-import entities.Task;
+import model.Task;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Cli {
+	Scanner scanner = new Scanner(System.in);
 	
-	public int cliMainMenu (Scanner scanner) {
+	public void cliMainMenu () {
 		while (true) {
 			try {
 				System.out.println("+================================================+");
@@ -55,22 +57,24 @@ public class Cli {
 		}
 	}
 	
-	public int cliAddTask (Scanner scanner) {
+	public int cliAddTask () {
 		try {
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+			
 			System.out.println("+================================================+");
 			System.out.println("|               Adicionar Tarefa                 |");
 			System.out.println("+================================================+");
 			System.out.print("\nNome: ");
 			String nome = scanner.nextLine();
 			
-			System.out.print("\nNome: ");
-			LocalDate dateFinished = scanner.nextDate;
-			
 			System.out.print("\nDescrição: ");
 			String description = scanner.nextLine();
 			
-			System.out.print("\nNome: ");
-			String nome = scanner.nextLine();
+			System.out.print("\nData de término: ");
+			LocalDate dateFinished = LocalDate.parse(scanner.nextLine(), dtf);
+			
+			System.out.print("\nNível de prioridade (1 à 5): ");
+			int priorityLevel = scanner.nextInt();
 			
 			System.out.print("\nNome: ");
 			String nome = scanner.nextLine();
