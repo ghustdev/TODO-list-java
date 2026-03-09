@@ -1,27 +1,46 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Task {
 	
 	private int id;
 	private String name;
 	private String description;
-	private LocalDate dateFinished;
+	private LocalDateTime dateTimeFinished;
 	private int priorityLevel;
 	private TaskStatus status;
 	private String category;
+	private boolean alarmEnabled;
+	private int alarmAdvanceMinutes;
 	
 	public Task() {}
 	
-	public Task(int id, String name, String description, LocalDate dateFinished,  Integer priorityLevel, String category, TaskStatus status) {
+	public Task(
+			int id,
+			String name,
+			String description,
+			LocalDateTime dateTimeFinished,
+			Integer priorityLevel,
+			String category,
+			TaskStatus status,
+			boolean alarmEnabled,
+			int alarmAdvanceMinutes
+	) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.dateFinished = dateFinished;
+		this.dateTimeFinished = dateTimeFinished;
 		this.priorityLevel = priorityLevel;
 		this.category = category;
 		this.status = status;
+		this.alarmEnabled = alarmEnabled;
+		this.alarmAdvanceMinutes = alarmAdvanceMinutes;
+	}
+
+	public Task(int id, String name, String description, LocalDate dateFinished, Integer priorityLevel, String category, TaskStatus status) {
+		this(id, name, description, dateFinished.atTime(23, 59), priorityLevel, category, status, false, 120);
 	}
 	
 	public int getId() {
@@ -37,7 +56,11 @@ public class Task {
 	}
 	
 	public LocalDate getDateFinished() {
-		return dateFinished;
+		return dateTimeFinished.toLocalDate();
+	}
+
+	public LocalDateTime getDateTimeFinished() {
+		return dateTimeFinished;
 	}
 	
 	public int getPriorityLevel() {
@@ -50,5 +73,13 @@ public class Task {
 	
 	public TaskStatus getStatus() {
 		return status;
+	}
+
+	public boolean isAlarmEnabled() {
+		return alarmEnabled;
+	}
+
+	public int getAlarmAdvanceMinutes() {
+		return alarmAdvanceMinutes;
 	}
 }

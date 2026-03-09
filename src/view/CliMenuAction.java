@@ -19,8 +19,7 @@ public class CliMenuAction {
 				System.out.println("+================================================+");
 				System.out.print("Selecione uma ação: ");
 				
-				int optionMenu = cli.scanner.nextInt();
-				cli.scanner.nextLine();
+				int optionMenu = Integer.parseInt(cli.scanner.nextLine());
 				
 				if (optionMenu == 1) {
 					cli.cliAddTask();
@@ -47,6 +46,7 @@ public class CliMenuAction {
 					cli.cliUpdateTask();
 				}
 				else if (optionMenu == 0) {
+					cli.stopAlarmNotifier();
 					cli.scanner.close();
 					break;
 				}

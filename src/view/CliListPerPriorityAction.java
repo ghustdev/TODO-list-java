@@ -33,9 +33,10 @@ public class CliListPerPriorityAction {
 				System.out.println("Id: " + task.getId());
 				System.out.println("Nome: " + task.getName());
 				System.out.println("Descricao: " + task.getDescription());
-				System.out.println("Data final (dd/MM/yyyy): " + task.getDateFinished());
+				System.out.println("Data final (dd/MM/yyyy HH:mm): " + task.getDateTimeFinished().format(cli.dateTimeFormatter));
 				System.out.println("Prioridade: " + task.getPriorityLevel());
 				System.out.println("Status: " + task.getStatus());
+				System.out.println("Alarme: " + (task.isAlarmEnabled() ? "Ativo (" + task.getAlarmAdvanceMinutes() + " min antes)" : "Inativo"));
 				System.out.println("+================================================+");
 			}
 			cli.pause();

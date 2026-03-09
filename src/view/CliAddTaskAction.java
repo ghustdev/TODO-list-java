@@ -3,13 +3,13 @@ package view;
 import model.TaskStatus;
 import services.TaskService;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class CliAddTaskAction {
 	static void cliAddTask(Cli cli) {
 		try {
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 			
 			System.out.println("+================================================+");
 			System.out.println("|               Adicionar Tarefa                 |");
@@ -20,11 +20,11 @@ public class CliAddTaskAction {
 			System.out.print("Descrição: ");
 			String description = cli.scanner.nextLine();
 			
-			System.out.print("Data final (dd/MM/yyyy): ");
-			LocalDate dateFinished = LocalDate.parse(cli.scanner.nextLine(), dtf);
-			while (dateFinished.isBefore(LocalDate.now())) {
-				System.out.print("\nErro: Insira uma data final correta (após hoje e dd/MM/yyyy): ");
-				dateFinished = LocalDate.parse(cli.scanner.nextLine(), dtf);
+			System.out.print("Data e hora final (dd/MM/yyyy HH:mm): ");
+			LocalDateTime dateTimeFinished = LocalDateTime.parse(cli.scanner.nextLine(), dtf);
+			while (dateTimeFinished.isBefore(LocalDateTime.now())) {
+				System.out.print("\nErro: Insira uma data/hora final correta (futuro e dd/MM/yyyy HH:mm): ");
+				dateTimeFinished = LocalDateTime.parse(cli.scanner.nextLine(), dtf);
 			}
 			
 			System.out.print("Nível de prioridade (1 à 5): ");
@@ -45,9 +45,27 @@ public class CliAddTaskAction {
 				optionStatus = Integer.parseInt(cli.scanner.nextLine());
 			}
 			TaskStatus status = (optionStatus == 2) ? TaskStatus.DOING : (optionStatus == 3) ? TaskStatus.DONE : TaskStatus.TODO;
+
+			System.out.print("Ativar alarme? (sim/nao): ");
+			String alarmOption = cli.scanner.nextLine().trim().toLowerCase();
+			while (!alarmOption.equals("sim") && !alarmOption.equals("nao")) {
+				System.out.print("Erro: Responda com sim ou nao: ");
+				alarmOption = cli.scanner.nextLine().trim().toLowerCase();
+			}
+
+			boolean alarmEnabled = alarmOption.equals("sim");
+			int alarmAdvanceMinutes = 0;
+			if (alarmEnabled) {
+				System.out.print("Antecedência do alarme em minutos (ex: 120): ");
+				alarmAdvanceMinutes = Integer.parseInt(cli.scanner.nextLine());
+				while (alarmAdvanceMinutes < 1) {
+					System.out.print("Erro: Insira um valor inteiro maior que 0: ");
+					alarmAdvanceMinutes = Integer.parseInt(cli.scanner.nextLine());
+				}
+			}
 			
 			TaskService taskService = new TaskService();
-			taskService.addTask(name, description,  dateFinished, priorityLevel, category, status);
+			taskService.addTask(name, description, dateTimeFinished, priorityLevel, category, status, alarmEnabled, alarmAdvanceMinutes);
 			
 			System.out.println("+================================================+");
 			System.out.println("Terafa adicionada com sucesso!");

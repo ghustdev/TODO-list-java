@@ -5,24 +5,33 @@ import model.TaskStatus;
 import repository.TaskRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TaskService {
 	TaskRepository repository = new TaskRepository();
 	
-	public void addTask(String name, String description, LocalDate dateFinished, Integer priorityLevel, String category, TaskStatus status) {
+	public void addTask(
+			String name,
+			String description,
+			LocalDateTime dateTimeFinished,
+			Integer priorityLevel,
+			String category,
+			TaskStatus status,
+			boolean alarmEnabled,
+			int alarmAdvanceMinutes
+	) {
 		List<Task> listTasks = repository.getTasks();
 		
 		int maxId = listTasks.stream().mapToInt(Task::getId).max().orElse(0) + 1;
 		
-		Task newTask = new Task(maxId, name, description, dateFinished, priorityLevel, category, status);
+		Task newTask = new Task(maxId, name, description, dateTimeFinished, priorityLevel, category, status, alarmEnabled, alarmAdvanceMinutes);
 		listTasks.add(newTask);
 		repository.saveTask(listTasks);
 	}
 	
 	public List<Task> listTasks() {
-		if (repository.getTasks() == null) return null;
 		return repository.getTasks();
 	}
 	
@@ -58,17 +67,27 @@ public class TaskService {
 	public List<Task> filterTasksPerDate(LocalDate dateFinished) {
 		List<Task> listTasks = repository.getTasks();
 		return listTasks.stream()
-				.filter(task -> task.getDateFinished().equals(dateFinished))
+				.filter(task -> task.getDateTimeFinished().toLocalDate().equals(dateFinished))
 				.collect(Collectors.toList());
 	}
 	
-	public boolean updateTask(int id, String name, String description, LocalDate dateFinished, Integer priorityLevel, String category, TaskStatus status) {
+	public boolean updateTask(
+			int id,
+			String name,
+			String description,
+			LocalDateTime dateTimeFinished,
+			Integer priorityLevel,
+			String category,
+			TaskStatus status,
+			boolean alarmEnabled,
+			int alarmAdvanceMinutes
+	) {
 		List<Task> listTasks = repository.getTasks();
 		
 		for (int i = 0; i < listTasks.size(); i++) {
 			Task task = listTasks.get(i);
 			if (task.getId() == id) {
-				Task updatedTask = new Task(id, name, description, dateFinished, priorityLevel, category, status);
+				Task updatedTask = new Task(id, name, description, dateTimeFinished, priorityLevel, category, status, alarmEnabled, alarmAdvanceMinutes);
 				listTasks.set(i, updatedTask);
 				repository.saveTask(listTasks);
 				return true;
@@ -88,5 +107,18 @@ public class TaskService {
 			return true;
 		}
 		return false;
+	}
+
+	public List<Task> listTasksWithAlarmDue(LocalDateTime referenceDateTime) {
+		List<Task> listTasks = repository.getTasks();
+		return listTasks.stream()
+				.filter(task -> task.isAlarmEnabled())
+				.filter(task -> task.getStatus() != TaskStatus.DONE)
+				.filter(task -> {
+					LocalDateTime dueDateTime = task.getDateTimeFinished();
+					LocalDateTime startAlarm = dueDateTime.minusMinutes(task.getAlarmAdvanceMinutes());
+					return !referenceDateTime.isBefore(startAlarm) && !referenceDateTime.isAfter(dueDateTime);
+				})
+				.collect(Collectors.toList());
 	}
 }
