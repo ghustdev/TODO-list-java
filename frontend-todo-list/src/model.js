@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'todolist_data'
 
+// Model default - simulate user
 export const state = {
   tasks: [],
   currentTab: 'today',
@@ -8,7 +9,7 @@ export const state = {
   alertedTasks: new Set()
 }
 
-// Load from localStorage
+// Load data state from localStorage
 export function loadState() {
   const saved = localStorage.getItem(STORAGE_KEY)
   if (saved) {
@@ -28,9 +29,9 @@ function saveState() {
 
 export function addTask(task) {
   state.tasks.push({
-    id: crypto.randomUUID(),
+    id: crypto.randomUUID(), // Unique ID
     createdAt: new Date().toISOString(),
-    ...task
+    ...task // Spread oparator, similar to Groovy
   })
   saveState()
 }

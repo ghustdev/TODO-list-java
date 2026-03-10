@@ -1,9 +1,9 @@
-import './style.css'
-import { loadState } from './state.js'
-import { render } from './render.js'
-import { startAlertSystem } from './alerts.js'
+import "./style.css";
+import { loadState } from "./model.js";
+import { render } from "./view.js";
+import { startAlertSystem } from "./alerts.js";
 
 // Initialize app
-loadState()
-render()
-startAlertSystem()
+loadState();
+render();
+startAlertSystem();
