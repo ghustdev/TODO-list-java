@@ -98,6 +98,7 @@ function changeGroupStatus(newStatus, selectedTaskIds) {
   });
 
   alert(`${selectedTaskIds.length} tarefa(s) atualizada(s) para ${newStatus}!`);
+  
 }
 
 export function openTaskModal(taskId = null) {
