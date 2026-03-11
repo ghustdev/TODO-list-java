@@ -125,7 +125,7 @@ function attachTaskModalListeners() {
       priority: parseInt(
         document.querySelector("#priorityGroup .toggle-btn.active").dataset.priority,
       ),
-      alert: document.getElementById("taskAlert").classList.contains("active"),
+      alert: document.getElementById("taskAlert").classList.contains("active"),m,mkmkkmkm
     };
 
     if (currentEditId) {
