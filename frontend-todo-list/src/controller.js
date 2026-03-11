@@ -3,6 +3,103 @@ import { render } from "./view.js";
 
 let currentEditId = null;
 
+export function openChangeStatusModal() {
+  const modal = document.getElementById("changeStatusModal");
+  const tasks = state.tasks.filter(
+    (t) => t.date === state.dateFilter
+  );
+
+  if (tasks.length === 0) {
+    alert("Nenhuma tarefa encontrada para esta data!");
+    return;
+  }
+
+  renderTaskSelection(tasks);
+  modal.classList.add("active");
+  attachChangeStatusModalListeners();
+}
+
+function renderTaskSelection(tasks) {
+  const container = document.getElementById("taskSelectionList");
+  let html = '<div style="margin-bottom: 20px;">';
+  html += '<p style="color: #666; margin-bottom: 15px;">Selecione as tarefas que deseja alterar (ou deixe todas marcadas):</p>';
+  html += '<div style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;">';
+  
+  tasks.forEach((task) => {
+    html += `
+      <label class="task-checkbox-item" style="display: flex; align-items: center; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: background 0.2s;">
+        <input type="checkbox" class="task-select-checkbox" data-task-id="${task.id}" checked style="margin-right: 12px; width: 18px; height: 18px; cursor: pointer;">
+        <div style="flex: 1;">
+          <div style="font-weight: 500; margin-bottom: 4px;">${task.title}</div>
+          <div style="font-size: 12px; color: #666;">
+            <span class="task-badge badge-status ${task.status.toLowerCase()}" style="margin-right: 8px;">${task.status}</span>
+            <i class="fa-regular fa-clock"></i> ${task.time}
+            <span style="margin-left: 8px;"><i class="fa-solid fa-tag"></i> ${task.category}</span>
+          </div>
+        </div>
+      </label>
+    `;
+  });
+  
+  html += '</div>';
+  html += '<button id="selectAllTasks" class="btn btn-secondary" style="margin-right: 10px;"><i class="fa-solid fa-check-double"></i> Marcar Todas</button>';
+  html += '<button id="deselectAllTasks" class="btn btn-secondary"><i class="fa-solid fa-xmark"></i> Desmarcar Todas</button>';
+  html += '</div>';
+  
+  container.innerHTML = html;
+  
+  // Add hover effect
+  setTimeout(() => {
+    document.querySelectorAll('.task-checkbox-item').forEach(item => {
+      item.addEventListener('mouseenter', () => item.style.background = '#f5f5f5');
+      item.addEventListener('mouseleave', () => item.style.background = 'transparent');
+    });
+  }, 0);
+}
+
+function attachChangeStatusModalListeners() {
+  const modal = document.getElementById("changeStatusModal");
+  
+  document.getElementById("closeChangeStatusModal").onclick = () => closeModal("changeStatusModal");
+  modal.onclick = (e) => {
+    if (e.target.id === "changeStatusModal") closeModal("changeStatusModal");
+  };
+
+  // Select/Deselect all buttons
+  document.getElementById("selectAllTasks").onclick = () => {
+    document.querySelectorAll(".task-select-checkbox").forEach(cb => cb.checked = true);
+  };
+  
+  document.getElementById("deselectAllTasks").onclick = () => {
+    document.querySelectorAll(".task-select-checkbox").forEach(cb => cb.checked = false);
+  };
+
+  document.querySelectorAll(".status-option").forEach((btn) => {
+    btn.onclick = () => {
+      const newStatus = btn.dataset.status;
+      const selectedTaskIds = Array.from(document.querySelectorAll(".task-select-checkbox:checked"))
+        .map(cb => cb.dataset.taskId);
+      
+      if (selectedTaskIds.length === 0) {
+        alert("Selecione pelo menos uma tarefa!");
+        return;
+      }
+      
+      changeGroupStatus(newStatus, selectedTaskIds);
+      closeModal("changeStatusModal");
+      render();
+    };
+  });
+}
+
+function changeGroupStatus(newStatus, selectedTaskIds) {
+  selectedTaskIds.forEach((taskId) => {
+    updateTask(taskId, { status: newStatus });
+  });
+
+  alert(`${selectedTaskIds.length} tarefa(s) atualizada(s) para ${newStatus}!`);
+}
+
 export function openTaskModal(taskId = null) {
   currentEditId = taskId;
   const task = taskId ? getTask(taskId) : null;
@@ -125,7 +222,7 @@ function attachTaskModalListeners() {
       priority: parseInt(
         document.querySelector("#priorityGroup .toggle-btn.active").dataset.priority,
       ),
-      alert: document.getElementById("taskAlert").classList.contains("active"),m,mkmkkmkm
+      alert: document.getElementById("taskAlert").classList.contains("active"),
     };
 
     if (currentEditId) {
