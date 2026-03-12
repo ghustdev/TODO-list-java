@@ -10,7 +10,7 @@ export function openChangeStatusModal() {
   );
 
   if (tasks.length === 0) {
-    alert("Nenhuma tarefa pendente encontrada para esta data!");
+    alert("Nenhuma tarefa encontrada para esta data!");
     return;
   }
 
